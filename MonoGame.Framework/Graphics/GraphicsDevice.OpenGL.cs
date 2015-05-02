@@ -308,10 +308,17 @@ namespace Microsoft.Xna.Framework.Graphics
                 }
 				bufferMask = bufferMask | ClearBufferMask.DepthBufferBit;
 			}
-
-
+                
 			GL.Clear(bufferMask);
+#if MONOMAC
+            // Ignore GL error on clear for MonoMac 
+            // Will throw a InvalidFramebufferOperationExt exception on the first call
+            // due to FrameBufferExt being undefined.
+            // https://github.com/mono/MonoGame/issues/3581
+            GL.GetError();
+#else
             GraphicsExtensions.CheckGLError();
+#endif
            		
             // Restore the previous render state.
 		    ScissorRectangle = prevScissorRect;
