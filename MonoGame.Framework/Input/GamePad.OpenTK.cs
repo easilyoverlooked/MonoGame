@@ -79,6 +79,11 @@ namespace Microsoft.Xna.Framework.Input
 
         private static GamePadState PlatformGetState(int index, GamePadDeadZone deadZoneMode)
         {
+#if MONOMAC
+            // Disable GamePadState for now.
+            // https://github.com/mono/MonoGame/issues/3790
+            return GamePadState.Default;
+#else
             PrepSettings();
 
             var stateTK = OpenTK.Input.GamePad.GetState (index);
@@ -125,7 +130,9 @@ namespace Microsoft.Xna.Framework.Input
             var result = new GamePadState(sticks, triggers, buttons, dpad);
             result.PacketNumber = stateTK.PacketNumber;
             return result;
+#endif
         }
+
 
         private static bool PlatformSetVibration(int index, float leftMotor, float rightMotor)
         {
